@@ -45,9 +45,11 @@ class DatabaseManager:
             spotify_popularity INTEGER,
             spotify_followers INTEGER,
             spotify_genres TEXT,
+            image_url TEXT,                 -- <-- ADD THIS LINE
             last_updated TEXT NOT NULL
         );
         """
+
         try:
             cursor = self.conn.cursor()
             cursor.execute(create_table_sql)

@@ -66,14 +66,24 @@ class DataProcessor:
             details = self.api_handler.get_artist_details(artist_id)
 
             if details:
-                # NEW LOGIC: Check if Spotify returned genres. If not, use the CSV genres.
-                if not details['spotify_genres']:  # This checks for an empty string
-                    print(f"-> Spotify has no genres for {artist_name_from_csv}. Using genres from dataset.")
-                    details['spotify_genres'] = genre_from_csv
+                # ... (genre fallback logic is here) ...
 
                 details['artist_id'] = artist_id
                 details['country'] = country
                 details['last_updated'] = datetime.now().isoformat()
+
+                # --- NEW LOGIC for Image URL ---
+                # The API returns a list of images, from largest to smallest.
+                # We'll take the middle one (index 1) which is usually 320x320.
+                # We check if the images list is not empty to avoid errors.
+                if details.get('images') and len(details['images']) > 1:
+                    details['image_url'] = details['images'][1]['url']
+                else:
+                    details['image_url'] = None # No image available
+
+                # We no longer need the full image list, so pop it.
+                details.pop('images', None)
+                # --- END NEW LOGIC ---
 
                 self.db_manager.add_artist(details)
 

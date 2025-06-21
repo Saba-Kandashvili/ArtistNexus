@@ -69,8 +69,9 @@ class APIHandler:
                 'artist_name': artist_data['name'],
                 'spotify_popularity': artist_data['popularity'],
                 'spotify_followers': artist_data['followers']['total'],
-                # Spotify returns genres as a list, so we join them into a single string
-                'spotify_genres': ', '.join(artist_data['genres'])
+                'spotify_genres': ', '.join(artist_data['genres']),
+                'images': artist_data['images'],
+                'external_urls': artist_data['external_urls']  # <-- ADD THIS LINE
             }
             return details
 
