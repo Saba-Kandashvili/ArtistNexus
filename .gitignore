@@ -1,0 +1,15 @@
+# .gitignore
+
+# Python cache
+__pycache__/
+*.pyc
+
+# IDE configuration
+.idea/
+
+# Environment
+venv/
+
+# Secrets and local data
+config.py
+*.db
