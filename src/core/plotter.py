@@ -1,55 +1,52 @@
-# src/core/plotter.py
+# src/core/plotter.py (Upgraded Version)
 
 import matplotlib.pyplot as plt
 import pandas as pd
 
-
 class Plotter:
     """
     Handles the creation of plots using Matplotlib.
-
-    This class contains static methods to generate different types of charts
-    from Pandas Series or DataFrame objects.
+    Contains static methods for generating different chart types.
     """
 
     @staticmethod
-    def plot_bar_chart(series: pd.Series, title: str, xlabel: str, ylabel: str):
-        """
-        Generates and displays a bar chart from a Pandas Series.
-
-        This method is designed for testing and direct visualization. It will
-        open a window to show the plot.
-
-        Args:
-            series (pd.Series): The data to plot. The series index will be used
-                                for the x-axis labels, and values for the bar heights.
-            title (str): The title of the chart.
-            xlabel (str): The label for the x-axis.
-            ylabel (str): The label for the y-axis.
-        """
-        if series is None or series.empty:
-            print("Cannot plot: The data series is empty or None.")
-            return
-
-        # Use a professional-looking style for the plot
+    def create_figure():
+        """Creates a standard matplotlib figure and axes."""
         plt.style.use('fivethirtyeight')
+        fig, ax = plt.subplots(figsize=(10, 6), dpi=100)
+        return fig, ax
 
-        # Create a figure and an axes object. figsize is in inches.
-        fig, ax = plt.subplots(figsize=(12, 8))
-
-        # Create the bar plot on the specified axes
+    @staticmethod
+    def plot_bar_chart(ax, series: pd.Series, title: str, xlabel: str, ylabel: str):
+        if series is None or series.empty: return
         series.plot(kind='bar', ax=ax)
-
-        # --- Customize the plot for better readability ---
         ax.set_title(title, fontsize=16)
         ax.set_xlabel(xlabel, fontsize=12)
         ax.set_ylabel(ylabel, fontsize=12)
+        ax.figure.autofmt_xdate(rotation=45, ha='right')
 
-        # Rotate the x-axis labels (e.g., country names) to prevent overlap
-        plt.xticks(rotation=45, ha='right')
+    # --- NEW PLOTTING METHODS ---
 
-        # Ensure all plot elements fit nicely into the figure area
-        plt.tight_layout()
+    @staticmethod
+    def plot_pie_chart(ax, series: pd.Series, title: str):
+        if series is None or series.empty: return
+        ax.pie(series, labels=series.index, autopct='%1.1f%%', startangle=90)
+        ax.set_title(title, fontsize=16)
+        ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
 
-        # Display the plot in a new window
-        plt.show()
+    @staticmethod
+    def plot_scatter_plot(ax, x_data, y_data, title: str, xlabel: str, ylabel: str):
+        if x_data is None or y_data is None: return
+        ax.scatter(x_data, y_data, alpha=0.5)
+        ax.set_title(title, fontsize=16)
+        ax.set_xlabel(xlabel, fontsize=12)
+        ax.set_ylabel(ylabel, fontsize=12)
+        ax.set_xscale('log') # Use a log scale for followers, as values can vary wildly
+
+    @staticmethod
+    def plot_histogram(ax, data, title: str, xlabel: str, bins=30):
+        if data is None: return
+        ax.hist(data, bins=bins, edgecolor='black')
+        ax.set_title(title, fontsize=16)
+        ax.set_xlabel(xlabel, fontsize=12)
+        ax.set_ylabel('Number of Artists', fontsize=12)

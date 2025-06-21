@@ -4,17 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="da9dc18b-ee54-48bb-8640-a0e4f15398f3" name="Changes" comment="initial commit, general structure built">
-      <change afterPath="$PROJECT_DIR$/src/core/api_handler.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/core/base_manager.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/core/data_analyzer.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/core/data_processor.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/core/plotter.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/ui/main_window.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/ArtistNexus.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/ArtistNexus.iml" afterDir="false" />
+    <list default="true" id="da9dc18b-ee54-48bb-8640-a0e4f15398f3" name="Changes" comment="core functionality done">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/db_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/db_manager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/data_analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/data_analyzer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/plotter.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/plotter.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ui/main_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/main_window.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,6 +74,36 @@
       <recent name="C:\Users\sabak\Desktop\ArtistNexus\data" />
     </key>
   </component>
+  <component name="RunManager">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="ArtistNexus" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.main" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -96,7 +120,7 @@
       <option name="presentableId" value="Default" />
       <updated>1750520254452</updated>
       <workItem from="1750520255518" duration="3527000" />
-      <workItem from="1750523901719" duration="100000" />
+      <workItem from="1750523901719" duration="2422000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit, general structure built">
       <option name="closed" value="true" />
@@ -106,7 +130,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750520722459</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="core functionality done">
+      <option name="closed" value="true" />
+      <created>1750525012659</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1750525012659</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -125,11 +157,12 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="initial commit, general structure built" />
-    <option name="LAST_COMMIT_MESSAGE" value="initial commit, general structure built" />
+    <MESSAGE value="core functionality done" />
+    <option name="LAST_COMMIT_MESSAGE" value="core functionality done" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/ArtistNexus$data_processor.coverage" NAME="data_processor Coverage Results" MODIFIED="1750522091610" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/core" />
-    <SUITE FILE_PATH="coverage/ArtistNexus$main_window.coverage" NAME="main_window Coverage Results" MODIFIED="1750522909439" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/ui" />
-    <SUITE FILE_PATH="coverage/ArtistNexus$main.coverage" NAME="main Coverage Results" MODIFIED="1750523944303" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/ArtistNexus$main_window.coverage" NAME="main_window Coverage Results" MODIFIED="1750528848837" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/ui" />
+    <SUITE FILE_PATH="coverage/ArtistNexus$main.coverage" NAME="main Coverage Results" MODIFIED="1750529117142" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
   </component>
 </project>
