@@ -1,69 +1,76 @@
-# src/core/database_manager.py
+# src/core/db_manager.py (More Robust Version)
 
 import sqlite3
 from sqlite3 import Error
-
 
 class DatabaseManager:
     """
     Handles all database operations for the ArtistNexus application.
     This includes creating the table and adding/retrieving artist data.
-
-    Attributes:
-        conn (sqlite3.Connection): The connection object to the database.
     """
 
     def __init__(self, db_file):
         """
         Initializes the DatabaseManager and connects to the specified database file.
-
-        Args:
-            db_file (str): The path to the SQLite database file.
         """
         self.conn = None
         try:
-            self.conn = sqlite3.connect(db_file)
+            # Connect to the database and get a connection object
+            self.conn = sqlite3.connect(db_file, check_same_thread=False)
             print(f"Successfully connected to database: {db_file}")
+            # Immediately attempt to create the table upon successful connection
+            self.create_table()
         except Error as e:
             print(f"Error connecting to database: {e}")
+            self.conn = None # Ensure conn is None if connection fails
+
+    def is_connected(self):
+        """Returns True if the database connection is active."""
+        return self.conn is not None
 
     def create_table(self):
         """
         Creates the main 'artists' table if it doesn't already exist.
-        The table stores both the original data and the data fetched from Spotify.
+        This is now called automatically during initialization.
         """
-        # Comments explaining each column for your assignment
+        if not self.is_connected():
+            print("Cannot create table: No database connection.")
+            return
+
         create_table_sql = """
-                           CREATE TABLE IF NOT EXISTS artists \
-                           ( \
-                               artist_id \
-                               TEXT \
-                               PRIMARY \
-                               KEY,     -- The unique Spotify ID for the artist \
-                               artist_name \
-                               TEXT \
-                               NOT \
-                               NULL,    -- The name of the artist \
-                               country \
-                               TEXT,    -- The country of origin from the initial dataset \
-                               spotify_popularity \
-                               INTEGER, -- Popularity score from Spotify (0-100) \
-                               spotify_followers \
-                               INTEGER, -- Total follower count from Spotify \
-                               spotify_genres \
-                               TEXT,    -- Comma-separated list of genres from Spotify \
-                               last_updated \
-                               TEXT \
-                               NOT \
-                               NULL     -- Timestamp of when the data was last fetched
-                           ); \
-                           """
+        CREATE TABLE IF NOT EXISTS artists (
+            artist_id TEXT PRIMARY KEY,
+            artist_name TEXT NOT NULL,
+            country TEXT,
+            spotify_popularity INTEGER,
+            spotify_followers INTEGER,
+            spotify_genres TEXT,
+            last_updated TEXT NOT NULL
+        );
+        """
         try:
             cursor = self.conn.cursor()
             cursor.execute(create_table_sql)
             self.conn.commit()
-            print("Table 'artists' created or already exists.")
+            print("Table 'artists' is ready.")
         except Error as e:
             print(f"Error creating table: {e}")
 
-    # We will add more methods here later, like add_artist_data() and get_artist_data()
+    def add_artist(self, artist_details: dict):
+        """
+        Inserts or replaces an artist's data in the database.
+        """
+        if not self.is_connected():
+            print("Cannot add artist: No database connection.")
+            return
+
+        sql = ''' INSERT OR REPLACE INTO artists(artist_id, artist_name, country, spotify_popularity, spotify_followers, spotify_genres, last_updated)
+                  VALUES(:artist_id, :artist_name, :country, :spotify_popularity, :spotify_followers, :spotify_genres, :last_updated) '''
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute(sql, artist_details)
+            self.conn.commit()
+            # We can make this print less verbose to clean up the output
+            # print(f"Successfully added/updated '{artist_details['artist_name']}' in the database.")
+        except Error as e:
+            print(f"Error adding artist '{artist_details['artist_name']}' to database: {e}")
