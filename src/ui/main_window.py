@@ -1,15 +1,17 @@
-# src/ui/main_window.py (Final Polished Version)
+# src/ui/main_window.py (Final Version with Threaded Export)
 
 import tkinter as tk
 from tkinter import ttk
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-# New imports for image handling and web browsing
 import requests
 from PIL import Image, ImageTk
 from io import BytesIO
 import webbrowser
+import threading
+import os
+import time  # Needed for unique filenames
 
 from core.data_analyzer import DataAnalyzer
 from core.plotter import Plotter
@@ -22,25 +24,31 @@ class AppGUI(tk.Tk):
         self.title("ArtistNexus: Global Music Analyzer")
         self.geometry("1200x800")
 
-        # --- NEW ROBUSTNESS CHECK ---
+        self.current_figure = None
+
         if self.analyzer.df is None or self.analyzer.df.empty:
-            # If no data was loaded, show an error and don't create the controls.
             error_label = ttk.Label(self, text="FATAL ERROR: Could not load data from database.\n"
                                                "Please ensure artist_data.db exists and is not corrupted.",
                                     font=("-size", 14), foreground="red", justify="center")
             error_label.pack(expand=True, padx=20, pady=20)
         else:
-            # Only create the widgets if data loading was successful
             self.create_widgets()
 
     def create_widgets(self):
-        # --- Layout Frames ---
+        # laout
         controls_frame = ttk.Frame(self, width=300, padding="10")
         controls_frame.pack(side="left", fill="y")
 
         main_content_frame = ttk.Frame(self, padding="10")
         main_content_frame.pack(side="right", expand=True, fill="both")
 
+        # status bar (looks ugly might delete)
+        status_bar_frame = ttk.Frame(self, relief="sunken", padding=(5, 2))
+        status_bar_frame.pack(side="bottom", fill="x")
+        self.status_label = ttk.Label(status_bar_frame, text="Welcome to ArtistNexus! Select an analysis to begin.")
+        self.status_label.pack(side="left")
+
+        # main content
         self.info_label = ttk.Label(main_content_frame,
                                     text="Select an analysis from the left panel and click 'Generate Plot'.",
                                     wraplength=800, justify="center", font=("-size", 12))
@@ -49,8 +57,7 @@ class AppGUI(tk.Tk):
         self.plot_frame = ttk.Frame(main_content_frame)
         self.plot_frame.pack(expand=True, fill="both")
 
-        # --- Sidebar Controls ---
-        # ... (same as before) ...
+        # sidebar
         ttk.Label(controls_frame, text="Select Analysis Type:", font="-weight bold").pack(anchor="w", pady=5)
         self.analysis_var = tk.StringVar(value="followers_by_country")
         analysis_types = [
@@ -74,10 +81,10 @@ class AppGUI(tk.Tk):
         self.country_dropdown.set("United States")
 
         self.n_label = ttk.Label(controls_frame, text="Number of results (N):")
-        self.n_var = tk.IntVar(value=10)  # Default to 10 for pie chart readability
+        self.n_var = tk.IntVar(value=10)
         self.n_spinbox = ttk.Spinbox(controls_frame, from_=5, to=30, textvariable=self.n_var)
 
-        # --- NEW: Artist Info Panel ---
+        # artist panel
         ttk.Separator(controls_frame, orient='horizontal').pack(fill='x', pady=10)
         self.artist_info_frame = ttk.LabelFrame(controls_frame, text="Artist Spotlight", padding=10)
         self.artist_info_frame.pack(fill='x', pady=10)
@@ -85,23 +92,26 @@ class AppGUI(tk.Tk):
         self.artist_name_label = ttk.Label(self.artist_info_frame, text="", font="-weight bold")
         self.artist_link_label = ttk.Label(self.artist_info_frame, text="", foreground="blue", cursor="hand2")
 
+        # buttoons
         ttk.Separator(controls_frame, orient='horizontal').pack(fill='x', pady=20)
         analyze_button = ttk.Button(controls_frame, text="Generate Plot", command=self._on_analyze_button_click)
         analyze_button.pack(anchor="w", fill="x", ipady=5)
 
+        # export as png
+        self.export_button = ttk.Button(controls_frame, text="Export Plot as PNG",
+                                        command=self._on_export_button_click, state="disabled")
+        self.export_button.pack(anchor="w", fill="x", ipady=5, pady=5)
+
         self.canvas = None
-        self._on_analysis_type_change()  # Call once to set initial UI state
+        self._on_analysis_type_change()
 
     def _on_analysis_type_change(self):
-        """Shows/hides parameter controls based on analysis type."""
         analysis_type = self.analysis_var.get()
-        # Hide all parameter widgets initially
         self.country_label.pack_forget()
         self.country_dropdown.pack_forget()
         self.n_label.pack_forget()
         self.n_spinbox.pack_forget()
 
-        # Show widgets based on selection
         if analysis_type in ["followers_by_country", "popularity_by_country"]:
             self.n_label.pack(anchor="w", pady=(10, 0))
             self.n_spinbox.pack(anchor="w", fill="x")
@@ -113,30 +123,40 @@ class AppGUI(tk.Tk):
                 self.n_spinbox.pack(anchor="w", fill="x")
 
     def _update_artist_spotlight(self, country):
-        """Fetches the most popular artist from a country and displays their info."""
         artist_info = self.analyzer.get_most_popular_artist_in_country(country)
-        if not artist_info: return
+        if not artist_info:
+            self.artist_name_label.config(text=f"No artist data for {country}.")
+            self.artist_link_label.pack_forget()
+            self.artist_image_label.pack_forget()
+            self.artist_name_label.pack()
+            return
 
-        self.artist_name_label.config(text=artist_info['artist_name'])
-        self.artist_link_label.config(text="View on Spotify")
-        self.artist_link_label.bind("<Button-1>", lambda e: webbrowser.open(artist_info['spotify_url']))
-
+        # artist name
+        self.artist_name_label.config(text=artist_info.get('artist_name', 'Unknown Artist'))
         self.artist_name_label.pack()
-        self.artist_link_label.pack()
 
-        # Image loading
-        if artist_info['image_url']:
+        # spotify url might be null
+        if artist_info.get('spotify_url'):
+            self.artist_link_label.config(text="View on Spotify", foreground="blue", cursor="hand2")
+            self.artist_link_label.bind("<Button-1>", lambda e: webbrowser.open(artist_info['spotify_url']))
+            self.artist_link_label.pack()
+        else:
+            self.artist_link_label.config(text="No Spotify link available", foreground="gray", cursor="")
+            self.artist_link_label.pack()
+
+        # image url might be null
+        self.artist_image_label.pack_forget()
+        if artist_info.get('image_url'):
             try:
                 response = requests.get(artist_info['image_url'])
-                response.raise_for_status()  # Raise an exception for bad status codes
+                response.raise_for_status()
                 img_data = response.content
                 img = Image.open(BytesIO(img_data))
-                img.thumbnail((200, 200))  # Resize image to fit panel
+                img.thumbnail((200, 200))
                 self.photo_image = ImageTk.PhotoImage(img)
                 self.artist_image_label.config(image=self.photo_image)
                 self.artist_image_label.pack()
             except requests.exceptions.RequestException as e:
-                self.artist_image_label.pack_forget()  # Hide if image fails to load
                 print(f"Error loading image: {e}")
 
     def _on_analyze_button_click(self):
@@ -145,40 +165,72 @@ class AppGUI(tk.Tk):
         country = self.country_var.get()
 
         if self.canvas: self.canvas.get_tk_widget().destroy()
+
         fig, ax = Plotter.create_figure()
+        self.current_figure = fig
 
         description = ""
-        # Hide artist spotlight by default, show it only when relevant
         self.artist_info_frame.pack_forget()
 
         if analysis_type == "followers_by_country":
             data = self.analyzer.get_top_n_countries_by_followers(n)
             Plotter.plot_bar_chart(ax, data, "", "Country", "Total Followers (Log Scale)")
-            ax.set_yscale('log')  # Use log scale for better visualization of wide-ranging data
-            description = f"This bar chart displays the top {n} countries ranked by the total combined Spotify followers of all their artists in the dataset. A logarithmic scale is used on the Y-axis to better visualize the vast differences between countries."
+            ax.set_yscale('log')
+            description = f"This bar chart displays the top {n} countries ranked by the total combined Spotify followers... (etc.)"
         elif analysis_type == "popularity_by_country":
             data = self.analyzer.get_top_n_countries_by_avg_popularity(n)
             Plotter.plot_bar_chart(ax, data, "", "Country", "Average Popularity Score")
-            description = f"This chart shows the top {n} countries ranked by the average Spotify Popularity Score of their artists. This metric highlights countries that produce artists who are, on average, highly popular right now."
+            description = f"This chart shows the top {n} countries ranked by the average Spotify Popularity Score... (etc.)"
         elif analysis_type == "genre_distribution":
             data = self.analyzer.get_genre_distribution_for_country(country, n)
             Plotter.plot_pie_chart(ax, data, "")
-            description = f"This pie chart shows the breakdown of the top {n} most common music genres for artists from {country}. It provides a snapshot of the country's musical identity."
-            self.artist_info_frame.pack(fill='x', pady=10)  # Show the artist frame
+            description = f"This pie chart shows the breakdown of the top {n} most common music genres for artists from {country}."
+            self.artist_info_frame.pack(fill='x', pady=10)
             self._update_artist_spotlight(country)
         elif analysis_type == "pop_vs_followers":
             x_data, y_data = self.analyzer.get_popularity_vs_followers(country)
             Plotter.plot_scatter_plot(ax, x_data, y_data, "", "Followers (log scale)", "Popularity Score")
-            description = f"This scatter plot explores the relationship between an artist's long-term fanbase (followers) and their current relevance (popularity) in {country}. Each dot represents an artist."
+            description = f"This scatter plot explores the relationship between an artist's long-term fanbase (followers) and their current relevance (popularity) in {country}."
             self.artist_info_frame.pack(fill='x', pady=10)
             self._update_artist_spotlight(country)
         elif analysis_type == "popularity_histogram":
             data = self.analyzer.get_popularity_distribution()
             Plotter.plot_histogram(ax, data, "", "Popularity Score")
-            description = "This histogram shows the overall distribution of artist popularity scores across the entire dataset. It reveals that most artists have a moderate popularity score, with true superstars being relatively rare."
+            description = "This histogram shows the overall distribution of artist popularity scores across the entire dataset."
 
         self.info_label.config(text=description)
         fig.tight_layout()
         self.canvas = FigureCanvasTkAgg(fig, master=self.plot_frame)
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+
+        self.export_button.config(state="normal")
+        self.status_label.config(text="Plot generated successfully. Ready for next analysis.")
+
+    def _on_export_button_click(self):
+        if self.current_figure is None:
+            return
+
+        self.export_button.config(state="disabled")
+        self.status_label.config(text="Exporting plot to PNG...")
+
+        export_thread = threading.Thread(target=self._export_current_plot)
+        export_thread.start()
+
+    def _export_current_plot(self):
+        try:
+            if not os.path.exists('reports'):
+                os.makedirs('reports')
+
+            filename = f"chart_export_{int(time.time())}.png"
+            filepath = os.path.join('reports', filename)
+
+            self.current_figure.savefig(filepath, dpi=150, bbox_inches='tight')
+
+            self.after(0, self.status_label.config, {'text': f"Successfully exported to {filepath}"})
+
+        except Exception as e:
+            self.after(0, self.status_label.config, {'text': f"Error exporting plot: {e}"})
+
+        finally:
+            self.after(0, self.export_button.config, {'state': "normal"})

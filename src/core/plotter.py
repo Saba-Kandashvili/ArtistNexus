@@ -1,5 +1,3 @@
-# src/core/plotter.py (Upgraded for Readability)
-
 import matplotlib.pyplot as plt
 import pandas as pd
 
@@ -9,7 +7,7 @@ class Plotter:
     def create_figure():
         plt.style.use('fivethirtyeight')
         fig, ax = plt.subplots(figsize=(10, 6), dpi=100)
-        # Add more bottom space to prevent label overlap
+        # prevent label overlap
         fig.subplots_adjust(bottom=0.2)
         return fig, ax
 
@@ -26,8 +24,7 @@ class Plotter:
     def plot_pie_chart(ax, series, title):
         if series is None or series.empty: return
 
-        # --- NEW LOGIC for Readability ---
-        # If there are more than 10 slices, use a legend instead of labels
+        # if there are more than 10 slices, use a legend instead of labels (but if theres too many slices this breaks ¯\_( ͡° ͜ʖ ͡°)_/¯ )
         if len(series) > 10:
             ax.pie(series, labels=None, startangle=90)
             ax.legend(series.index, title="Genres", loc="center left", bbox_to_anchor=(1, 0, 0.5, 1))
