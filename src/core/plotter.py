@@ -26,8 +26,15 @@ class Plotter:
 
         # if there are more than 10 slices, use a legend instead of labels (but if theres too many slices this breaks ¯\_( ͡° ͜ʖ ͡°)_/¯ )
         if len(series) > 10:
-            ax.pie(series, labels=None, startangle=90)
-            ax.legend(series.index, title="Genres", loc="center left", bbox_to_anchor=(1, 0, 0.5, 1))
+                # Calculate percentages for each slice
+                total = series.sum()
+                percentages = [(value / total) * 100 for value in series]
+
+                # Create legend labels with percentages
+                legend_labels = [f"{index} ({percentage:.1f}%)" for index, percentage in zip(series.index, percentages)]
+
+                ax.pie(series, labels=None, startangle=90)
+                ax.legend(legend_labels, title="Genres", loc="center left", bbox_to_anchor=(1, 0, 0.5, 1))
         else:
             ax.pie(series, labels=series.index, autopct='%1.1f%%', startangle=90)
 

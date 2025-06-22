@@ -4,18 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="da9dc18b-ee54-48bb-8640-a0e4f15398f3" name="Changes" comment="added a better way to populate the db">
+    <list default="true" id="da9dc18b-ee54-48bb-8640-a0e4f15398f3" name="Changes" comment="fixed image urls and did some refactoring">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/populate_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/populate_db.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/api_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/api_handler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/base_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/base_manager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/data_analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/data_analyzer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/data_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/data_processor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/db_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/db_manager.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/core/plotter.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/plotter.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ui/main_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/main_window.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -178,7 +169,7 @@
       <workItem from="1750520255518" duration="3527000" />
       <workItem from="1750523901719" duration="6908000" />
       <workItem from="1750582318044" duration="6217000" />
-      <workItem from="1750609687942" duration="5660000" />
+      <workItem from="1750609687942" duration="8772000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit, general structure built">
       <option name="closed" value="true" />
@@ -212,7 +203,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750542170903</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="fixed image urls and did some refactoring">
+      <option name="closed" value="true" />
+      <created>1750616272658</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1750616272658</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -234,12 +233,13 @@
     <MESSAGE value="core functionality done" />
     <MESSAGE value="added more plots and improved the UI" />
     <MESSAGE value="added a better way to populate the db" />
-    <option name="LAST_COMMIT_MESSAGE" value="added a better way to populate the db" />
+    <MESSAGE value="fixed image urls and did some refactoring" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed image urls and did some refactoring" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/ArtistNexus$populate_db.coverage" NAME="populate_db Coverage Results" MODIFIED="1750611311141" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scripts" />
+    <SUITE FILE_PATH="coverage/ArtistNexus$populate_db.coverage" NAME="populate_db Coverage Results" MODIFIED="1750616542306" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scripts" />
     <SUITE FILE_PATH="coverage/ArtistNexus$data_processor.coverage" NAME="data_processor Coverage Results" MODIFIED="1750610739855" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/core" />
     <SUITE FILE_PATH="coverage/ArtistNexus$main_window.coverage" NAME="main_window Coverage Results" MODIFIED="1750528848837" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/ui" />
-    <SUITE FILE_PATH="coverage/ArtistNexus$main.coverage" NAME="main Coverage Results" MODIFIED="1750614444198" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/ArtistNexus$main.coverage" NAME="main Coverage Results" MODIFIED="1750620272615" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
   </component>
 </project>
